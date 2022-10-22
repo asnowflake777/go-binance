@@ -1,6 +1,7 @@
 package binance
 
 import (
+	"context"
 	"fmt"
 	"time"
 )
@@ -15,57 +16,57 @@ import (
 // enum values to be used.
 type Client interface {
 	// Ping tests connectivity.
-	Ping() error
+	Ping(ctx context.Context) error
 	// Time returns server time.
-	Time() (time.Time, error)
+	Time(ctx context.Context) (time.Time, error)
 	// OrderBook returns list of orders.
-	OrderBook(obr OrderBookRequest) (*OrderBook, error)
+	OrderBook(ctx context.Context, obr OrderBookRequest) (*OrderBook, error)
 	// AggTrades returns compressed/aggregate list of trades.
-	AggTrades(atr AggTradesRequest) ([]*AggTrade, error)
+	AggTrades(ctx context.Context, atr AggTradesRequest) ([]*AggTrade, error)
 	// Klines returns klines/candlestick data.
-	Klines(kr KlinesRequest) ([]*Kline, error)
+	Klines(ctx context.Context, kr KlinesRequest) ([]*Kline, error)
 	// Ticker24 returns 24hr price change statistics.
-	Ticker24(tr TickerRequest) (*Ticker24, error)
+	Ticker24(ctx context.Context, tr TickerRequest) (*Ticker24, error)
 	// TickerAllPrices returns ticker data for symbols.
-	TickerAllPrices() ([]*PriceTicker, error)
+	TickerAllPrices(ctx context.Context) ([]*PriceTicker, error)
 	// TickerAllBooks returns tickers for all books.
-	TickerAllBooks() ([]*BookTicker, error)
+	TickerAllBooks(ctx context.Context) ([]*BookTicker, error)
 
 	// NewOrder places new order and returns ProcessedOrder.
-	NewOrder(nor NewOrderRequest) (*ProcessedOrder, error)
+	NewOrder(ctx context.Context, nor NewOrderRequest) (*ProcessedOrder, error)
 	// NewOrderTest places testing order.
-	NewOrderTest(nor NewOrderRequest) error
+	NewOrderTest(ctx context.Context, nor NewOrderRequest) error
 	// QueryOrder returns data about existing order.
-	QueryOrder(qor QueryOrderRequest) (*ExecutedOrder, error)
+	QueryOrder(ctx context.Context, qor QueryOrderRequest) (*ExecutedOrder, error)
 	// CancelOrder cancels order.
-	CancelOrder(cor CancelOrderRequest) (*CanceledOrder, error)
+	CancelOrder(ctx context.Context, cor CancelOrderRequest) (*CanceledOrder, error)
 	// OpenOrders returns list of open orders.
-	OpenOrders(oor OpenOrdersRequest) ([]*ExecutedOrder, error)
+	OpenOrders(ctx context.Context, oor OpenOrdersRequest) ([]*ExecutedOrder, error)
 	// AllOrders returns list of all previous orders.
-	AllOrders(aor AllOrdersRequest) ([]*ExecutedOrder, error)
+	AllOrders(ctx context.Context, aor AllOrdersRequest) ([]*ExecutedOrder, error)
 
 	// Account returns account data.
-	Account(ar AccountRequest) (*Account, error)
+	Account(ctx context.Context, ar AccountRequest) (*Account, error)
 	// MyTrades list user's trades.
-	MyTrades(mtr MyTradesRequest) ([]*Trade, error)
+	MyTrades(ctx context.Context, mtr MyTradesRequest) ([]*Trade, error)
 	// Withdraw executes withdrawal.
-	Withdraw(wr WithdrawRequest) (*WithdrawResult, error)
+	Withdraw(ctx context.Context, wr WithdrawRequest) (*WithdrawResult, error)
 	// DepositHistory lists deposit data.
-	DepositHistory(hr HistoryRequest) ([]*Deposit, error)
+	DepositHistory(ctx context.Context, hr HistoryRequest) ([]*Deposit, error)
 	// WithdrawHistory lists withdraw data.
-	WithdrawHistory(hr HistoryRequest) ([]*Withdrawal, error)
+	WithdrawHistory(ctx context.Context, hr HistoryRequest) ([]*Withdrawal, error)
 
 	// StartUserDataStream starts stream and returns Stream with ListenKey.
-	StartUserDataStream() (*Stream, error)
+	StartUserDataStream(ctx context.Context) (*Stream, error)
 	// KeepAliveUserDataStream prolongs stream livespan.
-	KeepAliveUserDataStream(s *Stream) error
+	KeepAliveUserDataStream(ctx context.Context, s *Stream) error
 	// CloseUserDataStream closes opened stream.
-	CloseUserDataStream(s *Stream) error
+	CloseUserDataStream(ctx context.Context, s *Stream) error
 
-	DepthWebsocket(dwr DepthWebsocketRequest) (chan *DepthEvent, chan struct{}, error)
-	KlineWebsocket(kwr KlineWebsocketRequest) (chan *KlineEvent, chan struct{}, error)
-	TradeWebsocket(twr TradeWebsocketRequest) (chan *AggTradeEvent, chan struct{}, error)
-	UserDataWebsocket(udwr UserDataWebsocketRequest) (chan *AccountEvent, chan struct{}, error)
+	DepthWebsocket(ctx context.Context, dwr DepthWebsocketRequest) (chan *DepthEvent, chan struct{}, error)
+	KlineWebsocket(ctx context.Context, kwr KlineWebsocketRequest) (chan *KlineEvent, chan struct{}, error)
+	TradeWebsocket(ctx context.Context, twr TradeWebsocketRequest) (chan *AggTradeEvent, chan struct{}, error)
+	UserDataWebsocket(ctx context.Context, udwr UserDataWebsocketRequest) (chan *AccountEvent, chan struct{}, error)
 }
 
 // Error represents Client error structure with error code and message.
