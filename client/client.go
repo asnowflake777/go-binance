@@ -19,7 +19,14 @@ type Client struct {
 
 func New(ctx context.Context, apiKey, secretKey string) binance.Client {
 	c := externalClient.NewClient(apiKey, secretKey)
-	return &Client{ctx: ctx, binanceClient: c}
+	client := &Client{
+		ctx:           ctx,
+		binanceClient: c,
+		pingService:   c.NewPingService(),
+		timeService:   c.NewServerTimeService(),
+		depthService:  c.NewDepthService(),
+	}
+	return client
 }
 
 func (c *Client) Ping() error {
