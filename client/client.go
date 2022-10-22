@@ -2,9 +2,10 @@ package client
 
 import (
 	"context"
-	externalClient "github.com/adshao/go-binance/v2"
-	binance "go-binance"
 	"time"
+
+	externalClient "github.com/adshao/go-binance/v2"
+	"github.com/asnowflake777/go-binance"
 )
 
 type Client struct {
