@@ -37,8 +37,8 @@ type AggTradeEvent struct {
 type AggTradesRequest struct {
 	Symbol    string
 	FromID    int64
-	StartTime int64
-	EndTime   int64
+	StartTime time.Time
+	EndTime   time.Time
 	Limit     int
 }
 
@@ -47,8 +47,8 @@ type KlinesRequest struct {
 	Symbol    string
 	Interval  Interval
 	Limit     int
-	StartTime int64
-	EndTime   int64
+	StartTime time.Time
+	EndTime   time.Time
 }
 
 type KlineEvent struct {
