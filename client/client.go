@@ -14,10 +14,6 @@ type Client struct {
 	ctx           context.Context
 	logger        log.Logger
 	binanceClient *externalClient.Client
-
-	pingService  *externalClient.PingService
-	timeService  *externalClient.ServerTimeService
-	depthService *externalClient.DepthService
 }
 
 func New(ctx context.Context, apiKey, secretKey string) binance.Client {
@@ -25,16 +21,16 @@ func New(ctx context.Context, apiKey, secretKey string) binance.Client {
 }
 
 func (c *Client) Ping(ctx context.Context) error {
-	return c.pingService.Do(ctx)
+	return c.binanceClient.NewPingService().Do(ctx)
 }
 
 func (c *Client) Time(ctx context.Context) (time.Time, error) {
-	t, err := c.timeService.Do(ctx)
+	t, err := c.binanceClient.NewServerTimeService().Do(ctx)
 	return time.UnixMilli(t), err
 }
 
 func (c *Client) OrderBook(ctx context.Context, obr binance.OrderBookRequest) (*binance.OrderBook, error) {
-	depthResponse, err := c.depthService.Symbol(obr.Symbol).Limit(obr.Limit).Do(ctx)
+	depthResponse, err := c.binanceClient.NewDepthService().Symbol(obr.Symbol).Limit(obr.Limit).Do(ctx)
 	if err != nil {
 		return nil, err
 	}
