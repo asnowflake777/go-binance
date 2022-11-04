@@ -70,11 +70,11 @@ func (c *Client) Klines(ctx context.Context, kr binance.KlinesRequest) ([]*binan
 	if kr.Limit > 0 {
 		klineService = klineService.Limit(kr.Limit)
 	}
-	if kr.StartTime > 0 {
-		klineService = klineService.StartTime(kr.StartTime)
+	if !kr.StartTime.IsZero() {
+		klineService = klineService.StartTime(kr.StartTime.UnixMilli())
 	}
-	if kr.EndTime > 0 {
-		klineService = klineService.StartTime(kr.EndTime)
+	if !kr.EndTime.IsZero() {
+		klineService = klineService.StartTime(kr.EndTime.UnixMilli())
 	}
 	klines, err := klineService.Do(ctx)
 	if err != nil {
