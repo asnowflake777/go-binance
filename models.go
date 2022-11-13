@@ -25,7 +25,7 @@ type Kline struct {
 	Volume                   float64
 	CloseTime                time.Time
 	QuoteAssetVolume         float64
-	NumberOfTrades           int
+	NumberOfTrades           int64
 	TakerBuyBaseAssetVolume  float64
 	TakerBuyQuoteAssetVolume float64
 }
