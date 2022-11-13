@@ -2,10 +2,11 @@ package client
 
 import (
 	"fmt"
-	externalClient "github.com/adshao/go-binance/v2"
-	"github.com/asnowflake777/go-binance"
 	"strconv"
 	"time"
+
+	externalClient "github.com/adshao/go-binance/v2"
+	"github.com/asnowflake777/go-binance"
 )
 
 func ConvertKline(kline *externalClient.Kline) (*binance.Kline, error) {
@@ -49,6 +50,7 @@ func ConvertKline(kline *externalClient.Kline) (*binance.Kline, error) {
 		Close:                    closed,
 		Volume:                   volume,
 		CloseTime:                time.UnixMilli(kline.CloseTime),
+		NumberOfTrades:           kline.TradeNum,
 		QuoteAssetVolume:         quoteAssetValume,
 		TakerBuyBaseAssetVolume:  takerBuyBaseAssetVolume,
 		TakerBuyQuoteAssetVolume: takerBuyQuoteAssetVolume,
