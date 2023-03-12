@@ -3,34 +3,37 @@ package client
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
-	externalClient "github.com/adshao/go-binance/v2"
+	extBinanceClient "github.com/adshao/go-binance/v2"
 	"github.com/asnowflake777/go-binance"
 )
 
 type Client struct {
-	ctx           context.Context
-	logger        log.Logger
-	binanceClient *externalClient.Client
+	ctx    context.Context
+	client *extBinanceClient.Client
 }
 
 func New(ctx context.Context, apiKey, secretKey string) binance.Client {
-	return &Client{ctx: ctx, binanceClient: externalClient.NewClient(apiKey, secretKey)}
+	c := extBinanceClient.NewClient(apiKey, secretKey)
+	client := &Client{
+		ctx:    ctx,
+		client: c,
+	}
+	return client
 }
 
 func (c *Client) Ping(ctx context.Context) error {
-	return c.binanceClient.NewPingService().Do(ctx)
+	return c.client.NewPingService().Do(ctx)
 }
 
 func (c *Client) Time(ctx context.Context) (time.Time, error) {
-	t, err := c.binanceClient.NewServerTimeService().Do(ctx)
+	t, err := c.client.NewServerTimeService().Do(ctx)
 	return time.UnixMilli(t), err
 }
 
 func (c *Client) OrderBook(ctx context.Context, obr binance.OrderBookRequest) (*binance.OrderBook, error) {
-	depthResponse, err := c.binanceClient.NewDepthService().Symbol(obr.Symbol).Limit(obr.Limit).Do(ctx)
+	depthResponse, err := c.client.NewDepthService().Symbol(obr.Symbol).Limit(obr.Limit).Do(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -60,22 +63,23 @@ func (c *Client) AggTrades(ctx context.Context, atr binance.AggTradesRequest) ([
 }
 
 func (c *Client) Klines(ctx context.Context, kr binance.KlinesRequest) ([]*binance.Kline, error) {
-	klineService := c.binanceClient.NewKlinesService().
+	klineService := c.client.NewKlinesService().
 		Symbol(kr.Symbol).
 		Interval(string(kr.Interval))
 	if kr.Limit > 0 {
 		klineService = klineService.Limit(kr.Limit)
 	}
-	if !kr.StartTime.IsZero() {
-		klineService = klineService.StartTime(kr.StartTime.UnixMilli())
+	if kr.StartTime > 0 {
+		klineService = klineService.StartTime(kr.StartTime)
 	}
-	if !kr.EndTime.IsZero() {
-		klineService = klineService.EndTime(kr.EndTime.UnixMilli())
+	if kr.EndTime > 0 {
+		klineService = klineService.StartTime(kr.EndTime)
 	}
 	klines, err := klineService.Do(ctx)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(klines)
 	var innerKlines []*binance.Kline
 	for _, kline := range klines {
 		innerKline, err := ConvertKline(kline)
@@ -178,32 +182,8 @@ func (c *Client) DepthWebsocket(ctx context.Context, dwr binance.DepthWebsocketR
 }
 
 func (c *Client) KlineWebsocket(ctx context.Context, kwr binance.KlineWebsocketRequest) (chan *binance.KlineEvent, chan struct{}, error) {
-	events := make(chan *binance.KlineEvent)
-	doneC, stopC, err := externalClient.WsKlineServe(kwr.Symbol, string(kwr.Interval),
-		func(event *externalClient.WsKlineEvent) {
-			convertedEvent, err := ConvertWSKlineEvent(event)
-			if err != nil {
-				c.logger.Println(err)
-			} else {
-				events <- convertedEvent
-			}
-		},
-		func(err error) {
-			c.logger.Println(err)
-		},
-	)
-	go func() {
-		<-doneC
-		close(events)
-	}()
-	go func() {
-		<-ctx.Done()
-		stopC <- struct{}{}
-	}()
-	if err != nil {
-		return nil, nil, err
-	}
-	return events, doneC, nil
+	//TODO implement me
+	panic("implement me")
 }
 
 func (c *Client) TradeWebsocket(ctx context.Context, twr binance.TradeWebsocketRequest) (chan *binance.AggTradeEvent, chan struct{}, error) {
