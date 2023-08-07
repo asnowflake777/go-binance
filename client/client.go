@@ -57,7 +57,7 @@ func (c *Client) OrderBook(ctx context.Context, obr binance.OrderBookRequest) (*
 	return ob, err
 }
 
-func (c *Client) AggTrades(ctx context.Context, atr binance.AggTradesRequest) ([]*binance.AggTrade, error) {
+func (c *Client) AggTrades(_ context.Context, _ binance.AggTradesRequest) ([]*binance.AggTrade, error) {
 	//TODO implement me
 	panic("implement me")
 }
@@ -69,8 +69,8 @@ func (c *Client) Klines(ctx context.Context, kr binance.KlinesRequest) ([]*binan
 	if kr.Limit > 0 {
 		klineService = klineService.Limit(kr.Limit)
 	}
-	if kr.StartTime > 0 {
-		klineService = klineService.StartTime(kr.StartTime)
+	if kr.StartTime.IsZero() {
+		klineService = klineService.StartTime(kr.StartTime.Unix())
 	}
 	if kr.EndTime > 0 {
 		klineService = klineService.StartTime(kr.EndTime)
@@ -91,107 +91,107 @@ func (c *Client) Klines(ctx context.Context, kr binance.KlinesRequest) ([]*binan
 	return innerKlines, nil
 }
 
-func (c *Client) Ticker24(ctx context.Context, tr binance.TickerRequest) (*binance.Ticker24, error) {
+func (c *Client) Ticker24(_ context.Context, _ binance.TickerRequest) (*binance.Ticker24, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) TickerAllPrices(ctx context.Context) ([]*binance.PriceTicker, error) {
+func (c *Client) TickerAllPrices(_ context.Context) ([]*binance.PriceTicker, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) TickerAllBooks(ctx context.Context) ([]*binance.BookTicker, error) {
+func (c *Client) TickerAllBooks(_ context.Context) ([]*binance.BookTicker, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) NewOrder(ctx context.Context, nor binance.NewOrderRequest) (*binance.ProcessedOrder, error) {
+func (c *Client) NewOrder(_ context.Context, _ binance.NewOrderRequest) (*binance.ProcessedOrder, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) NewOrderTest(ctx context.Context, nor binance.NewOrderRequest) error {
+func (c *Client) NewOrderTest(_ context.Context, _ binance.NewOrderRequest) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) QueryOrder(ctx context.Context, qor binance.QueryOrderRequest) (*binance.ExecutedOrder, error) {
+func (c *Client) QueryOrder(_ context.Context, _ binance.QueryOrderRequest) (*binance.ExecutedOrder, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) CancelOrder(ctx context.Context, cor binance.CancelOrderRequest) (*binance.CanceledOrder, error) {
+func (c *Client) CancelOrder(_ context.Context, _ binance.CancelOrderRequest) (*binance.CanceledOrder, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) OpenOrders(ctx context.Context, oor binance.OpenOrdersRequest) ([]*binance.ExecutedOrder, error) {
+func (c *Client) OpenOrders(_ context.Context, _ binance.OpenOrdersRequest) ([]*binance.ExecutedOrder, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) AllOrders(ctx context.Context, aor binance.AllOrdersRequest) ([]*binance.ExecutedOrder, error) {
+func (c *Client) AllOrders(_ context.Context, _ binance.AllOrdersRequest) ([]*binance.ExecutedOrder, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) Account(ctx context.Context, ar binance.AccountRequest) (*binance.Account, error) {
+func (c *Client) Account(_ context.Context, _ binance.AccountRequest) (*binance.Account, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) MyTrades(ctx context.Context, mtr binance.MyTradesRequest) ([]*binance.Trade, error) {
+func (c *Client) MyTrades(_ context.Context, _ binance.MyTradesRequest) ([]*binance.Trade, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) Withdraw(ctx context.Context, wr binance.WithdrawRequest) (*binance.WithdrawResult, error) {
+func (c *Client) Withdraw(_ context.Context, _ binance.WithdrawRequest) (*binance.WithdrawResult, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) DepositHistory(ctx context.Context, hr binance.HistoryRequest) ([]*binance.Deposit, error) {
+func (c *Client) DepositHistory(_ context.Context, _ binance.HistoryRequest) ([]*binance.Deposit, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) WithdrawHistory(ctx context.Context, hr binance.HistoryRequest) ([]*binance.Withdrawal, error) {
+func (c *Client) WithdrawHistory(_ context.Context, _ binance.HistoryRequest) ([]*binance.Withdrawal, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) StartUserDataStream(ctx context.Context) (*binance.Stream, error) {
+func (c *Client) StartUserDataStream(_ context.Context) (*binance.Stream, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) KeepAliveUserDataStream(ctx context.Context, s *binance.Stream) error {
+func (c *Client) KeepAliveUserDataStream(_ context.Context, _ *binance.Stream) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) CloseUserDataStream(ctx context.Context, s *binance.Stream) error {
+func (c *Client) CloseUserDataStream(_ context.Context, _ *binance.Stream) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) DepthWebsocket(ctx context.Context, dwr binance.DepthWebsocketRequest) (chan *binance.DepthEvent, chan struct{}, error) {
+func (c *Client) DepthWebsocket(_ context.Context, _ binance.DepthWebsocketRequest) (chan *binance.DepthEvent, chan struct{}, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) KlineWebsocket(ctx context.Context, kwr binance.KlineWebsocketRequest) (chan *binance.KlineEvent, chan struct{}, error) {
+func (c *Client) KlineWebsocket(_ context.Context, _ binance.KlineWebsocketRequest) (chan *binance.KlineEvent, chan struct{}, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) TradeWebsocket(ctx context.Context, twr binance.TradeWebsocketRequest) (chan *binance.AggTradeEvent, chan struct{}, error) {
+func (c *Client) TradeWebsocket(_ context.Context, _ binance.TradeWebsocketRequest) (chan *binance.AggTradeEvent, chan struct{}, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) UserDataWebsocket(ctx context.Context, udwr binance.UserDataWebsocketRequest) (chan *binance.AccountEvent, chan struct{}, error) {
+func (c *Client) UserDataWebsocket(_ context.Context, _ binance.UserDataWebsocketRequest) (chan *binance.AccountEvent, chan struct{}, error) {
 	//TODO implement me
 	panic("implement me")
 }
