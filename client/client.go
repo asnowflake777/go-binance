@@ -91,27 +91,27 @@ func (c *Client) Klines(ctx context.Context, kr binance.KlinesRequest) ([]*binan
 	return innerKlines, nil
 }
 
-func (c *Client) Ticker24(_ context.Context, _ binance.TickerRequest) (*binance.Ticker24, error) {
+func (c *Client) Ticker24(context.Context, binance.TickerRequest) (*binance.Ticker24, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) TickerAllPrices(_ context.Context) ([]*binance.PriceTicker, error) {
+func (c *Client) TickerAllPrices(context.Context) ([]*binance.PriceTicker, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) TickerAllBooks(_ context.Context) ([]*binance.BookTicker, error) {
+func (c *Client) TickerAllBooks(context.Context) ([]*binance.BookTicker, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) NewOrder(_ context.Context, _ binance.NewOrderRequest) (*binance.ProcessedOrder, error) {
+func (c *Client) NewOrder(context.Context, binance.NewOrderRequest) (*binance.ProcessedOrder, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (c *Client) NewOrderTest(_ context.Context, _ binance.NewOrderRequest) error {
+func (c *Client) NewOrderTest(context.Context, binance.NewOrderRequest) error {
 	//TODO implement me
 	panic("implement me")
 }
