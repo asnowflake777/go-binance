@@ -57,7 +57,7 @@ func (c *Client) OrderBook(ctx context.Context, obr binance.OrderBookRequest) (*
 	return ob, err
 }
 
-func (c *Client) AggTrades(_ context.Context, _ binance.AggTradesRequest) ([]*binance.AggTrade, error) {
+func (c *Client) AggTrades(context.Context, binance.AggTradesRequest) ([]*binance.AggTrade, error) {
 	//TODO implement me
 	panic("implement me")
 }
