@@ -7,20 +7,22 @@ import (
 
 	extBinanceClient "github.com/adshao/go-binance/v2"
 	"github.com/asnowflake777/go-binance"
+	"go.uber.org/zap"
 )
 
 type Client struct {
 	ctx    context.Context
 	client *extBinanceClient.Client
+	logger *zap.Logger
 }
 
-func New(ctx context.Context, apiKey, secretKey string) binance.Client {
+func New(ctx context.Context, apiKey, secretKey string, logger *zap.Logger) binance.Client {
 	c := extBinanceClient.NewClient(apiKey, secretKey)
-	client := &Client{
+	return &Client{
 		ctx:    ctx,
 		client: c,
+		logger: logger,
 	}
-	return client
 }
 
 func (c *Client) Ping(ctx context.Context) error {
@@ -79,7 +81,7 @@ func (c *Client) Klines(ctx context.Context, kr binance.KlinesRequest) ([]*binan
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(klines)
+
 	var innerKlines []*binance.Kline
 	for _, kline := range klines {
 		innerKline, err := ConvertKline(kline)
@@ -181,9 +183,33 @@ func (c *Client) DepthWebsocket(_ context.Context, _ binance.DepthWebsocketReque
 	panic("implement me")
 }
 
-func (c *Client) KlineWebsocket(_ context.Context, _ binance.KlineWebsocketRequest) (chan *binance.KlineEvent, chan struct{}, error) {
-	//TODO implement me
-	panic("implement me")
+func (c *Client) KlineWebsocket(ctx context.Context, kwr binance.KlineWebsocketRequest) (chan *binance.KlineEvent, chan struct{}, error) {
+	events := make(chan *binance.KlineEvent)
+	doneC, stopC, err := extBinanceClient.WsKlineServe(kwr.Symbol, string(kwr.Interval),
+		func(event *extBinanceClient.WsKlineEvent) {
+			convertedEvent, err := ConvertWSKlineEvent(event)
+			if err != nil {
+				c.logger.Error("failed to convert ws kline event", zap.Error(err))
+			} else {
+				events <- convertedEvent
+			}
+		},
+		func(err error) {
+			c.logger.Error("kline websocket error", zap.Error(err))
+		},
+	)
+	go func() {
+		<-doneC
+		close(events)
+	}()
+	go func() {
+		<-ctx.Done()
+		stopC <- struct{}{}
+	}()
+	if err != nil {
+		return nil, nil, err
+	}
+	return events, doneC, nil
 }
 
 func (c *Client) TradeWebsocket(_ context.Context, _ binance.TradeWebsocketRequest) (chan *binance.AggTradeEvent, chan struct{}, error) {

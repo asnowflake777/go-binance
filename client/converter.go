@@ -56,3 +56,41 @@ func ConvertKline(kline *externalClient.Kline) (*binance.Kline, error) {
 	}
 	return k, nil
 }
+
+func ConvertWSKlineEvent(event *externalClient.WsKlineEvent) (*binance.KlineEvent, error) {
+	kline, err := ConvertWSKline(&event.Kline)
+	if err != nil {
+		return nil, err
+	}
+	klineEvent := &binance.KlineEvent{
+		WSEvent: binance.WSEvent{
+			Type:   event.Event,
+			Time:   time.UnixMilli(event.Time),
+			Symbol: event.Symbol,
+		},
+		Interval:     binance.Interval(event.Kline.Interval),
+		FirstTradeID: event.Kline.FirstTradeID,
+		LastTradeID:  event.Kline.LastTradeID,
+		Final:        event.Kline.IsFinal,
+		Kline:        *kline,
+	}
+	return klineEvent, nil
+}
+
+func ConvertWSKline(wsKline *externalClient.WsKline) (*binance.Kline, error) {
+	kline := &externalClient.Kline{
+		OpenTime:                 wsKline.StartTime,
+		Open:                     wsKline.Open,
+		High:                     wsKline.High,
+		Low:                      wsKline.Low,
+		Close:                    wsKline.Close,
+		Volume:                   wsKline.Volume,
+		CloseTime:                wsKline.EndTime,
+		QuoteAssetVolume:         wsKline.QuoteVolume,
+		TradeNum:                 wsKline.TradeNum,
+		TakerBuyBaseAssetVolume:  wsKline.ActiveBuyVolume,
+		TakerBuyQuoteAssetVolume: wsKline.ActiveBuyQuoteVolume,
+	}
+	convertedKline, err := ConvertKline(kline)
+	return convertedKline, err
+}
